@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> </title>
+    <!-- custom-theme -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="{%static 'css/style.css' %}" rel="stylesheet" type="text/css" media="all" />
+    <script src="https://use.fontawesome.com/153bf891b6.js"></script>
+    <link
+      href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg ks-reg">
+    <div class="container-ks">
+      <div class="ks-reg-nav">
+        <h5 class="nav-register nav-active">Register</h5>
+        <div></div>
+        <h5 class="nav-login">Login</h5>
+      </div>
+      <div class="ks-reg-content">
+        <h2 class="text-center">register your account</h2>
+        <div class="form_kslayouts">
+          <form action="#" method="post" class="ks-reg-form">
+          {% csrf_token %}
+            <input type="hidden" name="formflag" value="0" />
+            
+            <div class="ks-reg-error">
+             {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "warning" %}
+                        * {{message}}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </div>
+            <div class="ks-reg-input">
+              <input
+                type="text"
+                name="first_name"
+                class="rfullname"
+                placeholder="Name"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-users"></i>
+              </div>
+            </div>
+            <div class="ks-reg-error"></div>
+            <div class="ks-reg-input">
+              <input
+                type="text"
+                name="username"
+                class="rusername"
+                placeholder="username"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-user"></i>
+              </div>
+            </div>
+            <div class="ks-reg-error"></div>
+            <div class="ks-reg-input">
+              <input
+                type="email"
+                name="email"
+                class="remail"
+                placeholder="example@email.com"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-envelope-o"></i>
+              </div>
+            </div>
+            <div class="ks-reg-error"></div>
+            <div class="ks-reg-input">
+              <input
+                type="password"
+                name="password1"
+                class="rpassword"
+                placeholder="password"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-unlock-alt"></i>
+              </div>
+            </div>
+            <div class="ks-reg-error"></div>
+            <div class="ks-reg-input">
+              <input
+                type="password"
+                name="password2"
+                class="rpassword1"
+                placeholder="confirm password"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-unlock-alt"></i>
+              </div>
+            </div>
+            <div class="ks-reg-error"></div>
+            <div class="clear"></div>
+            <div class="content-bottom" style="display: block;">
+              <div class="submit-ks submit-ks-disabled">
+                <input type="submit" value="Register" disabled />
+              </div>
+              <div class="ks-reg-link">
+                <span>Already a member?</span
+                ><a class="ks_play_icon1 play_reg" href="#"> sign in</a>
+              </div>
+              <div class="clear"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="ks-reg-content ks-log-content">
+        <h2 class="text-center">Login your account</h2>
+        <div class="form_kslayouts">
+          <form action="#" method="post" class="ks-reg-form ks-log-form">
+          {% csrf_token %}
+            <input type="hidden" name="formflag" value="1" />
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "info" %}
+                        <div class="ks-reg-error">
+                            * {{message}}
+                        </div>
+                    {% elif  message.tags == "success" %}
+                        <div class="ks-reg-error" style ="color : green">
+                            * {{message}}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            <div class="ks-reg-input">
+              <input
+                type="text"
+                name="username"
+                class="lusername"
+                placeholder="username"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-user"></i>
+              </div>
+            </div>
+            <div class="ks-reg-input">
+              <input
+                type="password"
+                name="password"
+                class="lpassword"
+                placeholder="password"
+                required=""
+              />
+              <div class="kss-icon">
+                <i class="fa fa-unlock-alt"></i>
+              </div>
+            </div>
+            <div class="clear"></div>
+            <div class="content-bottom" style="display: block;">
+              <div class="submit-ks">
+                <input type="submit" value="Log In" />
+              </div>
+              <div class="ks-reg-link">
+                <span>New User?</span
+                ><a class="ks_play_icon1 play_log" href="#"> sign up</a>
+              </div>
+              <div class="clear"></div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{%static 'js/reg.js' %}"></script>
+    <script>
+      {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == "info" or message.tags == "success" %}
+            $(".ks-reg-content").hide();
+            $(".ks-log-content").show();
+            $(".ks-reg-nav .nav-login").addClass("nav-active");
+            $(".ks-reg-nav .nav-register").removeClass("nav-active");
+            {% elif message.tags == "warning" %}
+            $(".ks-reg-content").show();
+            $(".ks-log-content").hide();
+            $(".ks-reg-nav .nav-login").removeClass("nav-active");
+            $(".ks-reg-nav .nav-register").addClass("nav-active");
+            {% endif %}
+            {% endfor %}
+        {% else %}
+           $(document).ready(function () {
+        $(".ks-log-content").hide(); });
+        {% endif %}
+      $(".nav-login,.play_reg").click(function () {
+        $(".ks-reg-content").hide();
+        $(".ks-log-content").show();
+        $(".ks-reg-nav .nav-login").addClass("nav-active");
+        $(".ks-reg-nav .nav-register").removeClass("nav-active");
+      });
+
+      $(".nav-register,.play_log").click(function () {
+        $(".ks-reg-content").show();
+        $(".ks-log-content").hide();
+        $(".ks-reg-nav .nav-login").removeClass("nav-active");
+        $(".ks-reg-nav .nav-register").addClass("nav-active");
+      });
+    </script>
+  </body>
+</html>

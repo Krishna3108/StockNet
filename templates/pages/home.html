@@ -1,0 +1,218 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <!-- Chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://www.chartjs.org/dist/2.9.3/Chart.min.js"></script>
+    <script src="{% static 'js/homechart.js' %}"></script>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <link
+      href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/4d7955fe75.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>StockNet</title>
+
+    <link rel="stylesheet" href="{% static 'css/homestyle.css' %}" />
+    <style>
+      canvas {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+      }
+    </style>
+  </head>
+  <body class="bg">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">StockNet</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a
+              class="nav-link nav-text nav-active"
+              id="indexLink"
+              href="#indexes"
+              >Indexes</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-text" id="companyLink" href="#companies"
+              >Companies</a
+            >
+          </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a
+              class="nav-link nav-text"
+              href="javascript:{document.getElementById('logout').submit()}"
+            >
+              Logout</a
+            >
+            <form action="{%url 'logout' %}" method="POST" id="logout">
+              {% csrf_token %}
+              <input type="hidden" />
+            </form>
+          </li>
+          {% else %}
+          <li>
+            <a href="{% url 'register' %}" class="nav-link nav-text"
+              >Register/Login</a
+            >
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+    {% if messages %}
+    <div class="container d-none">
+    {% for message in  messages %}
+    {{message}}
+    {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container mt-3" id="indexContainer">
+      <div class="row">
+        <div class="col-lg-3 col-md-5 col-sm-8">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="indexSearch">Indexes</label>
+            </div>
+            <select class="custom-select" id="indexSearch">
+              <option value="1" selected>Options ...</option>
+              <option value="NSE (Nifty)">NSE (Nifty)</option>
+              <option value="BSE (Sensex)">BSE (Sensex)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="indexDataplaceholder">
+        <div class="col-12">
+          <div
+            class="card mb-3"
+            style="background-color: rgba(365, 365, 365, 0.5);"
+          >
+            <div
+              class="card-body d-flex justify-content-around align align-items-center"
+              style="height: 50vh;"
+            >
+              <h1 style="color: rgba(365, 365, 365, 0.5);">
+                Select an Index .........
+              </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-3" id="companyContainer">
+      <div class="row pb-3">
+        <div class="col-lg-3 col-md-5 col-sm-6">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="companySearch"
+                >Companies</label
+              >
+            </div>
+            <select class="custom-select" id="companySearch">
+              <option value="1" selected>Options ...</option>
+              <option value="Tatasteel.NS">Tatasteel Ltd</option>
+              <option value="Reliance.NS">Reliance Ltd</option>
+              <option value="Eichermot.NS">Eichermot Ltd</option>
+              <option value="Cipla.NS">Cipla Ltd</option>
+              <option value="Ashokley.NS">Ashokley Ltd</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-5 col-sm-6">
+          <select class="custom-select" id="companylimit">
+            <option value="7" selected>7 days</option>
+            <option value="15">15 days</option>
+            <option value="30">1 month</option>
+            <option value="182">6 months</option>
+            <option value="365">1 year</option>
+            <option value="1095">3 years</option>
+            <option value="0">Max</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div
+            class="card mb-3"
+            id="companyDataplaceholder"
+            style="background-color: rgba(365, 365, 365, 0.3);"
+          >
+            <div
+              class="card-body d-flex justify-content-around align align-items-center"
+              style="height: 50vh;"
+            >
+              <h1 style="color: rgba(365, 365, 365, 0.5);">
+                Select a Company .........
+              </h1>
+            </div>
+          </div>
+          <div class="card mb-3" id="canvas-holder"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="{% static 'js/homepage.js' %}"></script>
+    <script>
+      $("#companyContainer").hide();
+      $("#indexLink").click(() => {
+        $("#indexLink").addClass("nav-active");
+        $("#companyLink").removeClass("nav-active");
+        $("#companyContainer").hide();
+        $("#indexContainer").show();
+      });
+      $("#companyLink").click(() => {
+        $("#companyLink").addClass("nav-active");
+        $("#indexLink").removeClass("nav-active");
+        $("#indexContainer").hide();
+        $("#companyContainer").show();
+      });
+    </script>
+  </body>
+</html>
